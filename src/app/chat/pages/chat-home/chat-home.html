@@ -8,48 +8,48 @@
 
   <!-- CHAT BODY -->
   <div class="chat-body">
-
-    @for (message of messages; track message) {
-
+    @for (message of messages();  track $index) {
       <div
         class="message"
         [class.user-message]="message.role === 'user'"
         [class.bot-message]="message.role === 'bot'"
       >
-
         <div class="message-content">
           {{ message.content }}
         </div>
-
       </div>
-
     }
 
-    @if (isLoading) {
-
+    <!-- THINKING -->
+    @if (isThinking()) {
       <div class="message bot-message">
-
-        <div class="message-content">
-          Typing...
+        <div class="message-content thinking">
+          Thinking...
         </div>
-
       </div>
-
     }
 
   </div>
- <p>{{isLoading}}</p>
 
-  <!-- FOOTER -->
-  <div class="chat-footer">
 
-    <input
-      type="text"
-      class="chat-input"
-      placeholder="Type your message..."
-      [(ngModel)]="userInput"
-      (keyup.enter)="sendMessage()"
-    />
+<!-- FOOTER -->
+<div class="chat-footer">
+    <div class="input-wrapper">
+      <input
+        type="text"
+        class="chat-input"
+        placeholder="Type your message..."
+        [(ngModel)]="userInput"
+        (input)="onTyping()"
+        (keyup.enter)="sendMessage()"
+      />
+      <!-- TYPING -->
+      @if (isTyping()) {
+        <!--div class="typing-text">
+          Typing...
+        </div-->
+      }
+    </div>
 
     <button
       class="send-btn"
@@ -57,7 +57,5 @@
     >
       Send
     </button>
-
   </div>
-
 </div>

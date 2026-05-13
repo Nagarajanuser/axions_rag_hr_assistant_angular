@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectorRef, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from './../../services/chat-service';
@@ -14,19 +14,31 @@ interface ChatMessage {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './chat-home.html',
-  styleUrl: './chat-home.scss',
+  styleUrls: ['./chat-home.scss'],
 })
 export class ChatHome {
   private chatService = inject(ChatService);
+  private cdr = inject(ChangeDetectorRef);
   userInput: string = '';
   isLoading: boolean = false;
+  isTyping = signal(false);
+  isThinking = signal(false);
 
-  messages: ChatMessage[] = [
+  messages = signal<ChatMessage[]>([
     {
       role: 'bot',
       content: 'Hello! Welcome to Axions HR Assistant.'
     }
-  ];
+  ]);
+
+  // -----------------------------------
+  // USER TYPING
+  // -----------------------------------
+  onTyping(): void {
+    this.isTyping.set(
+      this.userInput.trim().length > 0
+    );
+  }
 
   sendMessage(): void {
 
@@ -34,49 +46,65 @@ export class ChatHome {
       return;
     }
 
-    // ADD USER MESSAGE
-    this.messages.push({
-      role: 'user',
-      content: this.userInput
-    });
+    const currentMessage = this.userInput;
 
+    // ADD USER MESSAGE
+    this.messages.update(messages => [
+      ...messages,
+      {
+        role: 'user',
+        content: this.userInput
+      }
+    ]);
+
+    // PAYLOAD
     const payload: ChatRequest = {
       user_input: this.userInput
     };
 
     // CLEAR INPUT
     this.userInput = '';
-
     this.isLoading = true;
+
+    // RESET TYPING
+    this.isTyping.set(false);
+
+    // SHOW THINKING
+    this.isThinking.set(true);
 
     // API CALL
     this.chatService.sendMessage(payload)
       .subscribe({
-
         next: (response) => {
+           this.messages.update(messages => [
+            ...messages,
+            {
+              role: 'bot',
+              content: response.answer
+            }
+          ]);
 
-          console.log('API Response:', response);
+          // HIDE THINKING
+          this.isThinking.set(false);
 
-          this.messages.push({
-            role: 'bot',
-            content: response.answer
-          });
-
+          // FORCE UI UPDATE
+          this.cdr.detectChanges();
           console.log('messages:', this.messages);
-
           this.isLoading = false;
         },
 
         error: (error) => {
-
           console.error('API Error:', error);
-
-          this.messages.push({
-            role: 'bot',
-            content: 'Something went wrong.'
-          });
-
+          this.messages.update(messages => [
+            ...messages,
+            {
+              role: 'bot',
+              content: 'Something went wrong.'
+            }
+          ]);
           this.isLoading = false;
+          // HIDE THINKING
+          this.isThinking.set(false);
         }
 
       });
