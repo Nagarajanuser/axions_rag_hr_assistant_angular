@@ -1,0 +1,63 @@
+
+<div class="chat-container">
+
+  <!-- HEADER -->
+  <div class="chat-header">
+    <h2>Axions HR Assistant</h2>
+  </div>
+
+  <!-- CHAT BODY -->
+  <div class="chat-body">
+
+    @for (message of messages; track message) {
+
+      <div
+        class="message"
+        [class.user-message]="message.role === 'user'"
+        [class.bot-message]="message.role === 'bot'"
+      >
+
+        <div class="message-content">
+          {{ message.content }}
+        </div>
+
+      </div>
+
+    }
+
+    @if (isLoading) {
+
+      <div class="message bot-message">
+
+        <div class="message-content">
+          Typing...
+        </div>
+
+      </div>
+
+    }
+
+  </div>
+ <p>{{isLoading}}</p>
+
+  <!-- FOOTER -->
+  <div class="chat-footer">
+
+    <input
+      type="text"
+      class="chat-input"
+      placeholder="Type your message..."
+      [(ngModel)]="userInput"
+      (keyup.enter)="sendMessage()"
+    />
+
+    <button
+      class="send-btn"
+      (click)="sendMessage()"
+    >
+      Send
+    </button>
+
+  </div>
+
+</div>

@@ -57,3 +57,73 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+## Architecture
+src/
+│
+├── app/
+│   │
+│   ├── core/
+│   │   ├── services/
+│   │   ├── guards/
+│   │   ├── interceptors/
+│   │   ├── models/
+│   │   ├── constants/
+│   │   └── core.module.ts
+│   │
+│   ├── shared/
+│   │   ├── components/
+│   │   ├── directives/
+│   │   ├── pipes/
+│   │   ├── utils/
+│   │   └── shared.module.ts
+│   │
+│   ├── layout/
+│   │   ├── header/
+│   │   ├── sidebar/
+│   │   ├── footer/
+│   │   └── layout.module.ts
+│   │
+│   ├── auth/
+│   │   ├── login/
+│   │   ├── register/
+│   │   ├── services/
+│   │   ├── models/
+│   │   ├── auth-routing.module.ts
+│   │   └── auth.module.ts
+│   │   
+│   ├── chat/
+│   │   ├── components/
+│   │   │   ├── chat-window/
+│   │   │   ├── chat-input/
+│   │   │   ├── chat-message/
+│   │   │   └── typing-indicator/
+│   │   │
+│   │   ├── pages/
+│   │   │   └── chat-home/
+│   │   │
+│   │   ├── services/
+│   │   │   └── chat.service.ts
+│   │   │   │
+│   │   ├── models/
+│   │   │   ├── chat-request.model.ts
+│   │   │   └── chat-response.model.ts
+│   │   ├── chat-routing.module.ts
+│   │   └── chat.module.ts
+│   │   
+│   ├── users/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── models/
+│   │   ├── users-routing.module.ts
+│   │   └── users.module.ts
+│   │
+│   ├── app-routing.module.ts
+│   ├── app.component.ts
+│   └── app.module.ts
+│
+├── assets/
+├── environments/
+└── styles/
